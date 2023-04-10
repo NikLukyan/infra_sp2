@@ -39,6 +39,12 @@ sudo docker compose exec web python manage.py createsuperuser
 sudo docker compose exec web python manage.py collectstatic --no-input
 ```
 ### Команды для заполнения базы данных
+### Вариант 1
+Копировать заранее сохраненные фикстуры из папки data в папку infra c помощью команды:
+```
+cp data/fixtures.json infra/fixtures.json
+```
+### Вариант 2
 Создать дамп (резервную копию) базы данных "fixtures.json" можно следующей командой:
 ```
 sudo docker-compose exec web python manage.py dumpdata > fixtures.json
