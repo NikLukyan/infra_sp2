@@ -9,7 +9,7 @@
 
 Проект упакован в Docker контейнеры.
 
-Образ на DockerHub: niklukyan/api_yamdb:v1.1
+Образ на DockerHub: niklukyan/api_yamdb:v2.0
 
 ### Для подготовки .env файла необходимо заполнить все нужные переменные в файле шаблоне .env.template и выполнить команду:
 ```
@@ -23,25 +23,43 @@ git clone https://github.com/niklukyan/infra_sp2.git
 ```
 Запустить сборку контейнеров docker-compose:
 ```
-docker compose up -d
+sudo docker compose up -d
 ```
 Провести миграции:
 ```
-docker compose exec web python manage.py migrate
+sudo docker compose exec web python manage.py migrate
 ```
 
 Создать суперпользователя:
 ```
-docker compose exec web python manage.py createsuperuser
+sudo docker compose exec web python manage.py createsuperuser
 ```
 Собрать статику:
 ```
-docker compose exec web python manage.py collectstatic --no-input
+sudo docker compose exec web python manage.py collectstatic --no-input
 ```
-Для заполнения базы данными, необходимо перейти в папку 
-data(расположенную в корне проекта) и запустить 
+### Команды для заполнения базы данных
+Создать дамп (резервную копию) базы данных "fixtures.json" можно следующей командой:
 ```
-docker compose exec web python manage.py loaddata fixtures.json 
+sudo docker-compose exec web python manage.py dumpdata > fixtures.json
+```
+Далее команды по востановлению базы данных из резервной копии. Узнаем CONTAINER ID для контейнера с джанго - "infra-web-1":
+```
+sudo docker container ls -a
+```
+Копируем файл "fixtures.json" с фикстурами в контейнер::
+```
+sudo docker cp fixtures.json <CONTAINER ID>:/app
+```
+Применяем фикстуры:
+```
+sudo docker-compose exec web python manage.py loaddata fixtures.json
+```
+Удаляем файл "fixtures.json" из контейнера:
+```
+sudo docker exec -it <CONTAINER ID> bash
+rm fixtures.json
+exit
 ```
 ### Документация
 - Когда вы запустите проект, по нижеуказанному адресу будет 
