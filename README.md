@@ -1,29 +1,20 @@
-## Api_YaMDb
+### Api_YaMDb
 Проект YaMDb собирает отзывы пользователей на произведения.
 Сами произведения в YaMDb не хранятся, здесь нельзя посмотреть фильм или послушать музыку.
 ### Благодаря этому проекту пользователи смогут:
  - Зарегистрироваться
  - Оставить отзыв и оценку на произведение
  - Оставить комментарий к отзыву 
- - многое многое другое
+ - Многое другое
 
 Проект упакован в Docker контейнеры.
 
 Образ на DockerHub: niklukyan/api_yamdb:v1.1
-### Шаблон заполнения .env файла
-DB_ENGINE=<тип БД>
 
-DB_NAME=<имя базы данных>
-
-POSTGRES_USER=<логин для подключения к базе данных>
-
-POSTGRES_PASSWORD=<пароль для подключения к БД>
-
-DB_HOST=<название сервиса (контейнера)>
-
-DB_PORT=<порт для подключения к БД>
-
-SECRET_KEY=<секретный ключ>
+### Для подготовки .env файла необходимо заполнить все нужные переменные в файле шаблоне .env.template и выполнить команду:
+```
+cp infra/.env.template infra/.env 
+```
 
 ### Запуск приложения в контейнерах
 Клонировать репозиторий и перейти в папку infra в командной строке:
@@ -32,26 +23,27 @@ git clone https://github.com/niklukyan/infra_sp2.git
 ```
 Запустить сборку контейнеров docker-compose:
 ```
-docker-compose up -d
+docker compose up -d
 ```
 Провести миграции:
 ```
-docker-compose exec web python manage.py migrate
+docker compose exec web python manage.py migrate
 ```
 
 Создать суперпользователя:
 ```
-docker-compose exec web python manage.py createsuperuser
+docker compose exec web python manage.py createsuperuser
 ```
 Собрать статику:
 ```
-docker-compose exec web python manage.py collectstatic --no-input
+docker compose exec web python manage.py collectstatic --no-input
 ```
-Заполнение базы данными
+Для заполнения базы данными, необходимо перейти в папку 
+data(расположенную в корне проекта) и запустить 
 ```
-docker-compose exec web python manage.py loaddata fixtures.json 
+docker compose exec web python manage.py loaddata fixtures.json 
 ```
-## Документация
+### Документация
 - Когда вы запустите проект, по нижеуказанному адресу будет 
 доступна полная документация для API YaMDb в формате Swager 
 ```
@@ -62,7 +54,7 @@ docker-compose exec web python manage.py loaddata fixtures.json
 /api/schema/redoc/
 ```
 
-## Примеры 
+### Примеры 
 ### Самостоятельная регистрация новых пользователей
 - Пользователь отправляет POST-запрос с параметрами email и username на эндпоинт 
 ```
@@ -82,7 +74,7 @@ docker-compose exec web python manage.py loaddata fixtures.json
 ```
 и заполнить поля в своём профайле (описание полей — в документации).
 
-## Авторы
+### Авторы
  
 ```
 Никита Лукьянчук (8-918-261-01-04 nikluk@mail.ru), Елена Тимофеева, Дмитрий Бессмертный
