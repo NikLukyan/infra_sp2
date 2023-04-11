@@ -1,4 +1,4 @@
-### Api_YaMDb
+# Api_YaMDb
 Проект YaMDb собирает отзывы пользователей на произведения.
 Сами произведения в YaMDb не хранятся, здесь нельзя посмотреть фильм или послушать музыку.
 ### Благодаря этому проекту пользователи смогут:
@@ -21,22 +21,42 @@ cp infra/.env.template infra/.env
 ```
 git clone https://github.com/niklukyan/infra_sp2.git
 ```
+Чтобы постоянно не запускать команды docker с правами root, 
+можно добавить пользователя в группу docker. 
+
+Сделать это очень просто с помощью команды:
+```
+sudo usermod -aG docker ${USER}
+```
+Команда отрабатывает без вывода успеха в консоль. 
+И теперь, чтобы изменения вступили в силу нужно либо 
+выйти и снова залогиниться на удаленный сервер, или в случае 
+локальной «машины», достаточно выполнить команду: 
+```
+su - ${USER}
+```
+Потребуется ввести пароль пользователя и вы получите новую сессию для пользователя.
+
+Теперь если посмотреть в каких группах состоит текущий пользователь, то появится группа 998(docker) . Для этого достаточно выполнить команду:
+```
+id ${USER}
+```
 Запустить сборку контейнеров docker-compose:
 ```
-sudo docker compose up -d
+docker compose up -d
 ```
 Провести миграции:
 ```
-sudo docker compose exec web python manage.py migrate
+docker compose exec web python manage.py migrate
 ```
 
 Создать суперпользователя:
 ```
-sudo docker compose exec web python manage.py createsuperuser
+docker compose exec web python manage.py createsuperuser
 ```
 Собрать статику:
 ```
-sudo docker compose exec web python manage.py collectstatic --no-input
+docker compose exec web python manage.py collectstatic --no-input
 ```
 ### Команды для заполнения базы данных
 ### Вариант 1
@@ -47,23 +67,23 @@ cp data/fixtures.json infra/fixtures.json
 ### Вариант 2
 Создать дамп (резервную копию) базы данных "fixtures.json" можно следующей командой:
 ```
-sudo docker-compose exec web python manage.py dumpdata > fixtures.json
+docker-compose exec web python manage.py dumpdata > fixtures.json
 ```
 Далее команды по востановлению базы данных из резервной копии. Узнаем CONTAINER ID для контейнера с джанго - "infra-web-1":
 ```
-sudo docker container ls -a
+docker container ls -a
 ```
 Копируем файл "fixtures.json" с фикстурами в контейнер::
 ```
-sudo docker cp fixtures.json <CONTAINER ID>:/app
+docker cp fixtures.json <CONTAINER ID>:/app
 ```
 Применяем фикстуры:
 ```
-sudo docker-compose exec web python manage.py loaddata fixtures.json
+docker-compose exec web python manage.py loaddata fixtures.json
 ```
 Удаляем файл "fixtures.json" из контейнера:
 ```
-sudo docker exec -it <CONTAINER ID> bash
+docker exec -it <CONTAINER ID> bash
 rm fixtures.json
 exit
 ```

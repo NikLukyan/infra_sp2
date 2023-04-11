@@ -2,6 +2,7 @@ version: '3.9'
 volumes:
   static_value:
   media_value:
+  db_data_value:
 services:
     db:
       image: postgres:13.0-alpine
